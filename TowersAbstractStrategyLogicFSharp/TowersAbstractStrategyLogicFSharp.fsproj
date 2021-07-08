@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Length.fs" />
+    <Compile Include="Dimension.fs" />
+    <Compile Include="Coordinate.fs" />
+    <Compile Include="DomainTypes.fs" />
+    <Compile Include="BoardState.fs" />
+    <Compile Include="Move.fs" />
+  </ItemGroup>
+
+</Project>
