@@ -1,6 +1,4 @@
-﻿using TowersAbstractStrategyLogic.Exceptions;
-
-namespace TowersAbstractStrategyLogic.Exceptions
+﻿namespace TowersAbstractStrategyLogic.Exceptions
 {
     /// <summary>Immutable class representing the board state at a given moment</summary>
     ///
@@ -13,7 +11,7 @@ namespace TowersAbstractStrategyLogic.Exceptions
         {
             this.board = board;
         }
-        
+
         public BoardState(BoardState state, HalfMove move)
         {
             if (move.Coordinates.x > board.BoardWidth || move.Coordinates.y > board.BoardHeight)

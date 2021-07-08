@@ -62,7 +62,7 @@ namespace TowersAbstractStrategyLogic
             try
             {
                 List<string> extras = optionsSet.Parse(args);
-                foreach(string s in extras)
+                foreach (string s in extras)
                 {
                     Console.Error.WriteLine($"Unknown argument {s}");
                 }
@@ -83,7 +83,7 @@ namespace TowersAbstractStrategyLogic
             }
 
             // If no height supplied the board is a square
-            if(widthSupplied && !heightSupplied)
+            if (widthSupplied && !heightSupplied)
             {
                 height = width;
             }

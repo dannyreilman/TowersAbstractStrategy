@@ -38,9 +38,9 @@ module Move =
         let heights = [for i in 1 .. boardState.MaxHeight-> i]
         let (Move c) = move
         let predicate = match boardState.WhoseTurn with
-        |Player White -> fun(height:int) -> fun(square:int) -> square <= -1 * height
-        |Player Black -> fun(height:int) -> fun(square:int) -> square >= height 
-        |GameOver     -> fun(height:int) -> fun(square:int) ->false
+                        |Player White -> fun(height:int) -> fun(square:int) -> square <= -1 * height
+                        |Player Black -> fun(height:int) -> fun(square:int) -> square >= height 
+                        |GameOver     -> fun(height:int) -> fun(square:int) ->false
         let isTrueByHeight = [for height in heights ->
                               let predicate' = predicate height
                               let diagonalCoords = Coordinate.applyInner (fun((a:int, b:int)) -> getDiagonals (a,b) height) c
