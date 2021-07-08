@@ -17,16 +17,13 @@ module Move =
         |Player White -> Coordinate.applyInner(fun (x,y) -> getHeight boardState.State.[x,y] >= boardState.MaxHeight) move
         |Player Black -> Coordinate.applyInner(fun (x,y) -> getHeight boardState.State.[x,y] <= -1 * boardState.MaxHeight) move
         |GameOver     -> false
-        
-    let applyByCoordinate f (a,b) (array:SquareState[,]) =
-        let (SquareState s) = array.[a,b]
-        f s
-        
-    let private tryFind (boardState:BoardState) (x,y) predicate =
+    
+    let private tryApplyByCoordinate (boardState:BoardState) f (x,y) failure =
         match (x,y) with
-        |(x,_) when x < 0 || x > Array2D.base1 boardState.State -> false
-        |(_,y) when y < 0 || y > Array2D.base2 boardState.State -> false
-        |(_,_) -> predicate boardState.State.[x,y]
+        |(x,_) when x < 0 || x > Array2D.base1 boardState.State -> failure
+        |(_,y) when y < 0 || y > Array2D.base2 boardState.State -> failure
+        |(_,_) -> let (SquareState s) = boardState.State.[x,y]
+                  f s
 
     let private getDiagonals (a,b) height =
         [(a + height, b + height); (a - height, b + height); (a + height, b - height); (a - height, b - height)]
@@ -47,7 +44,7 @@ module Move =
         let isTrueByHeight = [for height in heights ->
                               let predicate' = predicate height
                               let diagonalCoords = Coordinate.applyInner (fun((a:int, b:int)) -> getDiagonals (a,b) height) c
-                              let booleans = [for coord in diagonalCoords -> applyByCoordinate predicate' coord boardState.State]
+                              let booleans = [for coord in diagonalCoords -> tryApplyByCoordinate boardState predicate' coord false]
                               anyTrue booleans]
         anyTrue isTrueByHeight
 
