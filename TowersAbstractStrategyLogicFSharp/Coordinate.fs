@@ -17,3 +17,5 @@ module Coordinate =
     let applyInner f (Coordinate (w, h)) = f (Length.value w, Length.value h)
 
     let value d = apply id d
+
+    let valueInner d = applyInner id d
