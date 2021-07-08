@@ -18,11 +18,21 @@ module Move =
         |Player Black -> Coordinate.applyInner(fun (x,y) -> getHeight boardState.State.[x,y] <= -1 * boardState.MaxHeight) move
         |GameOver     -> false
         
-    let tryFind (boardState:BoardState) (x,y) predicate =
+    let applyByCoordinate f (a,b) (array:SquareState[,]) =
+        let (SquareState s) = array.[a,b]
+        f s
+        
+    let private tryFind (boardState:BoardState) (x,y) predicate =
         match (x,y) with
         |(x,_) when x < 0 || x > Array2D.base1 boardState.State -> false
         |(_,y) when y < 0 || y > Array2D.base2 boardState.State -> false
         |(_,_) -> predicate boardState.State.[x,y]
+
+    let private getDiagonals (a,b) height =
+        [(a + height, b + height); (a - height, b + height); (a + height, b - height); (a - height, b - height)]
+
+    let private anyTrue (list:list<bool>) = 
+        List.exists ((=) true) list
 
     /// <summary>Checks if the move is valid based on diagonal rules.
     /// A move cannot be played at a diagonal distance from an opponents piece less than or equal to the opponent's piece's height.</summary>
@@ -30,11 +40,16 @@ module Move =
     let isDiagonallyInvalid boardState (move:Move) =
         let heights = [for i in 1 .. boardState.MaxHeight-> i]
         let (Move c) = move
-        let diagonals = Coordinate.applyInner (fun((a:int, b:int)) -> [for height in heights -> [(a + height, b + height); (a - height, b + height); (a + height, b - height); (a - height, b - height)]]) c
         let predicate = match boardState.WhoseTurn with
-        |Player White -> fun(height:int) -> fun(square:int) -> a <= -1 * height
-        |Player Black -> fun(height:int) -> fun(square:int) -> a >= height 
+        |Player White -> fun(height:int) -> fun(square:int) -> square <= -1 * height
+        |Player Black -> fun(height:int) -> fun(square:int) -> square >= height 
         |GameOver     -> fun(height:int) -> fun(square:int) ->false
+        let isTrueByHeight = [for height in heights ->
+                              let predicate' = predicate height
+                              let diagonalCoords = Coordinate.applyInner (fun((a:int, b:int)) -> getDiagonals (a,b) height) c
+                              let booleans = [for coord in diagonalCoords -> applyByCoordinate predicate' coord boardState.State]
+                              anyTrue booleans]
+        anyTrue isTrueByHeight
 
 
 
